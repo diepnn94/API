@@ -1,0 +1,76 @@
+
+import Project_3
+
+class STEPS:
+
+    def __init__(self, url: 'json'):
+        self._url = url
+        
+    def calculate(self, url: 'json', location_num:int)-> None:
+        ''' Print out the steps listed in the URL'''
+        print('\nDIRECTIONS\n')
+        for location in range(0, location_num-1):
+            for item in url['route']['legs'][location]['maneuvers']:
+                print(item['narrative'])
+                print()
+
+class TOTALDISTANCE:
+    def calculate(self, url: 'json', location_num:int)-> None:
+        ''' Print out the total distance in mile for the trip'''
+        mileage = 0
+        for location in range(0, location_num-1):
+            for item in url['route']['legs'][location]['maneuvers']:
+                mileage+= item['distance']
+        print('\nTOTAL DISTANCE: {} miles'.format(round(mileage)))
+
+class TOTALTIME:
+    def calculate(self, url: 'json', location_num:int)-> None:
+        '''Print out the total time in minute for the trip'''
+        time = 0
+        for location in range(0, location_num-1):
+            for item in url['route']['legs'][location]['maneuvers']:
+                time += item['time']
+        print('\nTOTAL TIME: {} minutes'.format((round(time/60))))
+
+class LATLONG:
+    def calculate(self, url: 'json', location_num: int)-> None:
+        ''' Print out the latitude and and longitude for each specified location'''
+
+        for location in range(0, location_num):
+            longtitude = (url['route']['locations'][location]['latLng']['lng'])
+            latitude = (url['route']['locations'][location]['latLng']['lat'])
+
+
+            new_longtitude = round(longtitude,2)
+            long_dir= 'E'
+
+            new_latitude= round(latitude,2)
+            lat_dir= 'N'
+
+            if longtitude < 0:
+                new_longtitude = round(longtitude*(-1),2)
+                long_dir = 'W'                     
+            elif latitude < 0:
+                new_latitude = round(latitude*(-1),2)
+                lat_dir = 'S'
+
+            print("\n{:.2f}{} {:.2f}{}".format(new_latitude, lat_dir, new_longtitude, long_dir))
+
+
+
+def run_calcs(calcs: ['calc'], url: 'json', location_num: int)-> None:
+    ''' Print the calculation for each cal specified above'''
+    
+    for calc in calcs:
+        if calc == 'LATLONG':
+            item = LATLONG()
+        if calc == 'TOTALTIME':
+            item = TOTALTIME()
+        if calc == 'TOTALDISTANCE':
+            item = TOTALDISTANCE()
+        if calc == 'STEPS':
+            item = STEPS()
+        item.calculate(url, location_num)
+
+    
+        
